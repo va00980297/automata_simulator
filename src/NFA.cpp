@@ -40,7 +40,7 @@ namespace automata
         checkState(s);
         checkSymbol(a);
 
-        // Unlike a DFA, several targets are allowed. Skip exact duplicates.
+        // Unlike a DFA, several targets are allowed. Skip exact duplicates
         if (s >= delta.size() || a >= delta[s].size())
         {
             return {};

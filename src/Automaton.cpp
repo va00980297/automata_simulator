@@ -4,11 +4,11 @@
 
 namespace automata
 {
+    // tip: Automaton:: says "this is the member function of Automaton", not a free function
     void Automaton::printInfo() const
     {
         std::cout << "========== AUTOMATON INFO ==========\n";
 
-        // States are just 0 .. numStates-1.
         std::cout << "States: ";
         for (State s = 0; s < numStates; ++s)
         {
@@ -16,7 +16,8 @@ namespace automata
         }
         std::cout << '\n';
 
-        // Print names, not ids: human-readable.
+        // Print names instead of ids, easier to read.
+        // tip: const& in a range-for = no copy of each string
         std::cout << "Alphabet: ";
         for (const std::string &name : symbolNames)
         {
@@ -26,9 +27,8 @@ namespace automata
 
         std::cout << "Start State: " << startState << '\n';
 
-        // std::set iterates in sorted order.
         std::cout << "Accept States: ";
-        for (State s : acceptStates)
+        for (State s : acceptStates) // a set always iterates in sorted order
         {
             std::cout << s << ' ';
         }
@@ -37,13 +37,12 @@ namespace automata
 
     State Automaton::addState()
     {
-        // Post-increment: returns the old value (= new id), then counts up.
+        // tip: x++ returns the OLD value, so the first call returns 0
         return numStates++;
     }
 
     Symbol Automaton::addSymbol(const std::string &name)
     {
-        // Names must be unique. const&: read each name without copying.
         for (const std::string &existing : symbolNames)
         {
             if (existing == name)
@@ -52,13 +51,12 @@ namespace automata
             }
         }
         symbolNames.push_back(name);
-        // Appended at the end -> its id is the last index.
-        return symbolNames.size() - 1;
+        return symbolNames.size() - 1; // just appended -> it's the last index
     }
 
     void Automaton::checkState(State s) const
     {
-        // State is unsigned, so only the upper bound needs checking.
+        // Unsigned, so s >= 0 is free. Only the upper bound needs a check.
         if (s >= numStates)
         {
             throw std::out_of_range("invalid state: " + std::to_string(s));
@@ -75,13 +73,13 @@ namespace automata
 
     void Automaton::setStart(State s)
     {
-        checkState(s); // validate before changing anything
+        checkState(s); // check first, then change -> object never ends up broken
         startState = s;
     }
 
     void Automaton::addAccept(State s)
     {
         checkState(s);
-        acceptStates.insert(s); // inserting an existing state has no effect
+        acceptStates.insert(s); // already in there? set just ignores it
     }
 } // namespace automata

@@ -7,21 +7,24 @@
 
 namespace automata
 {
-    // Deterministic automaton: at most one next state per (state, symbol).
-    class DFA : public Automaton // public inheritance: a DFA "is an" Automaton
+    // Deterministic: at most one next state per (state, symbol).
+    // tip: public inheritance = "a DFA is an Automaton", base members keep their access
+    class DFA : public Automaton
     {
     public:
-        // Add from --a--> to. Throws if an id is invalid
-        // or if (from, a) already leads to a different state.
+        // Add from --a--> to.
+        // Throws if an id is invalid or (from, a) already goes somewhere else.
         void addTransition(State from, Symbol a, State to);
 
-        // Return the next state, or std::nullopt if there is no transition.
-        // Throws std::out_of_range if s or a is invalid.
+        // Next state, or std::nullopt if there's no transition.
         std::optional<State> next(State s, Symbol a) const;
 
+        // Run the word through the DFA, true if it ends in an accepting state.
+        bool accepts(const Word &word) const;
+
     private:
-        // delta[s][a] = next state, or std::nullopt if no transition.
-        // Grown lazily, so it may be smaller than stateCount() x symbolCount().
+        // delta[s][a] = next state, or std::nullopt.
+        // Grows lazily, so it can be smaller than stateCount() x symbolCount().
         std::vector<std::vector<std::optional<State>>> delta;
     };
 } // namespace automata

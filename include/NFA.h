@@ -7,23 +7,24 @@
 
 namespace automata
 {
-    // Nondeterministic automaton: any number of next states, plus epsilon moves.
+    // Nondeterministic: any number of next states, plus epsilon moves.
     class NFA : public Automaton
     {
     public:
-        // Add from --a--> to. Adding the same transition twice has no effect.
+        // Add from --a--> to. Adding the same one twice does nothing.
         void addTransition(State from, Symbol a, State to);
 
-        // Add an epsilon move from --ε--> to (no symbol is read).
+        // Add from --eps--> to (moves without reading a symbol).
         void addEpsilon(State from, State to);
 
-        // Return all states reachable from s by reading a (may be empty).
+        // All states reachable from s by reading a (may be empty).
         std::set<State> next(State s, Symbol a) const;
 
     private:
-        // delta[s][a] = list of possible next states
+        // delta[s][a] = set of next states
         std::vector<std::vector<std::set<State>>> delta;
-        // epsilon[s] = states reachable from s by one epsilon move
+        // epsilon[s] = states reachable from s by one epsilon move.
+        // One level less than delta: epsilon reads no symbol.
         std::vector<std::set<State>> epsilon;
     };
 } // namespace automata
